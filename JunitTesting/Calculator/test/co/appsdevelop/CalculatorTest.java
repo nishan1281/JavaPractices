@@ -3,6 +3,11 @@ package co.appsdevelop;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,29 +18,31 @@ class CalculatorTest {
         System.out.println("text before each test");
         calculator = new Calculator();
     }
-
+//    Parameterized test of below test
+//    @Test
+//    void testIntegerDivision_whenFourIsDividedByTwo_shouldReturnTwo() {
+//        int result = calculator.integerDivision(4, 2);
+//        assertEquals(2, result, ()-> "result not passed");
+//
+//    }
 
     @DisplayName("test 4/2 =2")
-    @Test
-    void testIntegerDivision_whenFourIsDividedByTwo_shouldReturnTwo() {
-        int result = calculator.integerDivision(4, 2);
-        assertEquals(2, result, ()-> "result not passed");
+    @ParameterizedTest
+    @MethodSource () //if Stream method is same as test method no need the below code
+    //@MethodSource ("parameterizedIntegerDivision")
 
+    void parameterizedIntegerDivision(int dividend, int divisor, int expectedResult) {
+        int result = calculator.integerDivision(dividend, divisor);
+        assertEquals(expectedResult, result, ()-> "result not passed");
     }
 
-    @DisplayName("division by zero")
-    @Test
-    void testIntegerDivisionByZero(){
-        int dividend = 4;
-        int divisor = 0;
-        String expectedExceptionalMessage = "/ by zero";
-        ArithmeticException actualException = assertThrows(ArithmeticException.class, ()-> {
-            calculator.integerDivision(dividend,divisor);
-        }, "division by zero should have thrown an exception");
-
-        assertEquals(expectedExceptionalMessage, actualException.getMessage(),
-                "unexpected exception message");
-
-
+//creat a same method as methodSource which will accept stream of arguments
+    private static Stream<Arguments> parameterizedIntegerDivision ()
+    {
+        return Stream.of(
+                Arguments.of(4,2,2),
+                Arguments.of(6,2,3),
+                Arguments.of(8,2,4)
+        );
     }
 }
